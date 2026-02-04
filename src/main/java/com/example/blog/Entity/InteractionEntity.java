@@ -3,8 +3,12 @@ package com.example.blog.Entity;
 import java.time.LocalDateTime;
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 
 @Data
+@Getter
+@Setter
 @Entity
 @Table(name="interactions")
 public class InteractionEntity {
@@ -13,16 +17,20 @@ public class InteractionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(name="post_id")
-    private Long postId;
-
-    @Column(name="user_id")
-    private Long userId;
-
     private String comment;
 
     @Column(name="is_like")
     private boolean isLike;
 
     private LocalDateTime time;
+    
+    // Many Interactions belong to One Post
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id", nullable = false)
+    private Post post;
+    
+    // Many Interactions are made by One User
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private SignUp user;
 }

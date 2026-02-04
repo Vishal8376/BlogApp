@@ -1,11 +1,12 @@
 package com.example.blog.Controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.example.blog.Entity.SignUp;
-import com.example.blog.Service.SignUpService; 
-
+import com.example.blog.Service.SignUpService;
 
 @RestController
 @RequestMapping("/api")
@@ -14,8 +15,18 @@ public class SignUpController {
     private SignUpService signupService;
 
     @PostMapping("/signup")
-    public void signup(@RequestBody SignUp body) {        
-        this.signupService.registerUser(body);
+    public ResponseEntity<?> signup(@RequestBody SignUp body) {
+        try {
+            if (body.getEmailId() == null || body.getEmailId().isEmpty() || 
+                body.getPassword() == null || body.getPassword().isEmpty() || 
+                body.getName() == null || body.getName().isEmpty()) {
+                return ResponseEntity.badRequest().body("Email, password and name are required");
+            }
+            
+            signupService.registerUser(body);
+            return ResponseEntity.status(HttpStatus.CREATED).body("User registered successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Registration failed: " + e.getMessage());
+        }
     }
-    
 } 

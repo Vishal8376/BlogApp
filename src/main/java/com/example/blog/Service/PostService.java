@@ -15,7 +15,10 @@ public class PostService {
     private PostRepository postRepository;
 
     public Post createPost(Post post) {
-        return postRepository.save(post);
+        if (post != null) {
+            return postRepository.save(post);
+        }
+        return null;
     }
 
     public List<Post> getAllPosts() {
@@ -27,6 +30,8 @@ public class PostService {
     }
 
     public void deletePost(Long id) {
-        postRepository.deleteById(id);
+        if (id != null) {
+            postRepository.deleteById(id);
+        }
     }
 }

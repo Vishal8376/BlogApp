@@ -2,11 +2,16 @@ package com.example.blog.Entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Data
+@Getter
+@Setter
 @Table(name = "posts")
 public class Post {
 
@@ -22,13 +27,20 @@ public class Post {
 
     private String image;
 
-    @Column(name = "user_id", nullable = false)
-    private Long userId;
-
+    @Column(nullable = false)
     private String username;
 
     @CreationTimestamp
     private LocalDateTime time;
 
     private String hashtags;
+    
+    // Many Posts belong to One User
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private SignUp user;
+    
+    // One Post can have Many Interactions (likes/comments)
+    @OneToMany(mappedBy = "post", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<InteractionEntity> interactions;
 }
