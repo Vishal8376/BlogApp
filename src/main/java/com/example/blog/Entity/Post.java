@@ -37,7 +37,7 @@ public class Post {
     
     // Many Posts belong to One User
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", nullable = false)
+    @JoinColumn(name = "user_id", nullable = true)
     private SignUp user;
     
     // One Post can have Many Interactions (likes/comments)
