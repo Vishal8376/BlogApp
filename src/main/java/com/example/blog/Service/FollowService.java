@@ -1,9 +1,9 @@
-package com.example.followers.Service;
+package com.example.blog.Service;
 
-import com.example.followers.Entity.Followers;
-import com.example.followers.Entity.User;
-import com.example.followers.Repository.FollowRepository;
-import com.example.followers.Repository.UserRepository;
+import com.example.blog.Entity.Followers;
+import com.example.blog.Entity.User;
+import com.example.blog.Repository.FollowRepository;
+import com.example.blog.Repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;

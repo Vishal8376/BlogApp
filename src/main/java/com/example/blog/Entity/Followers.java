@@ -1,4 +1,4 @@
-package com.example.followers.Entity;
+package com.example.blog.Entity;
 import jakarta.persistence.*;
 import lombok.Data;
 

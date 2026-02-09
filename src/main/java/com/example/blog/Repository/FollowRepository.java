@@ -1,6 +1,6 @@
-package com.example.followers.Repository;
+package com.example.blog.Repository;
 
-import com.example.followers.Entity.Followers;
+import com.example.blog.Entity.Followers;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

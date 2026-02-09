@@ -1,6 +1,6 @@
-package com.example.followers.Controller;
+package com.example.blog.Controller;
 
-import com.example.followers.Service.FollowService;
+import com.example.blog.Service.FollowService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
