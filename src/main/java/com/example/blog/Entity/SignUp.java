@@ -25,9 +25,18 @@ public class SignUp {
     @Column(nullable=false, length = 100, unique = true)
     private String emailId;
     
+    @Column(length = 500)
+    private String bio;
+    
+    @Column(length = 255)
+    private String profilePicUrl;
+    
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> posts;
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<InteractionEntity> interactions;
+    
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<SavedPost> savedPosts;
 } 
