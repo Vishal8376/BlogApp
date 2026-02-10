@@ -1,10 +1,16 @@
 package com.example.blog.Controller;
 
-import com.example.blog.Service.FollowService;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-
 import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.example.blog.Service.FollowService;
 
 @RestController
 @RequestMapping("/api/follow")
@@ -18,8 +24,8 @@ public class FollowController {
      * POST /api/follow?followerId=1&followedUserId=5
      */
     @PostMapping
-    public Map<String, Object> follow(@RequestParam Long followerId,
-                                      @RequestParam Long followedUserId) {
+    public Map<String, Object> follow(@RequestParam long followerId,
+                                      @RequestParam long followedUserId) {
         return service.followUser(followerId, followedUserId);
     }
 
@@ -28,8 +34,8 @@ public class FollowController {
      * DELETE /api/follow?followerId=1&followedUserId=5
      */
     @DeleteMapping
-    public Map<String, String> unfollow(@RequestParam Long followerId,
-                                        @RequestParam Long followedUserId) {
+    public Map<String, String> unfollow(@RequestParam long followerId,
+                                        @RequestParam long followedUserId) {
         return service.unfollowUser(followerId, followedUserId);
     }
 
@@ -38,8 +44,8 @@ public class FollowController {
      * GET /api/follow/check?followerId=1&followedId=5
      */
     @GetMapping("/check")
-    public boolean checkFollowing(@RequestParam Long followerId,
-                                  @RequestParam Long followedId) {
+    public boolean checkFollowing(@RequestParam long followerId,
+                                  @RequestParam long followedId) {
         return service.isFollowing(followerId, followedId);
     }
 
@@ -48,7 +54,7 @@ public class FollowController {
      * GET /api/follow/following?userId=1
      */
     @GetMapping("/following")
-    public Object getFollowingList(@RequestParam Long userId) {
+    public Object getFollowingList(@RequestParam long userId) {
         return service.getFollowingList(userId);
     }
 
@@ -57,7 +63,7 @@ public class FollowController {
      * GET /api/follow/followers?userId=1
      */
     @GetMapping("/followers")
-    public Object getFollowersList(@RequestParam Long userId) {
+    public Object getFollowersList(@RequestParam long userId) {
         return service.getFollowersList(userId);
     }
 
@@ -66,7 +72,7 @@ public class FollowController {
      * GET /api/follow/following/count?userId=1
      */
     @GetMapping("/following/count")
-    public long getFollowingCount(@RequestParam Long userId) {
+    public long getFollowingCount(@RequestParam long userId) {
         return service.getFollowingCount(userId);
     }
 
@@ -75,7 +81,7 @@ public class FollowController {
      * GET /api/follow/followers/count?userId=1
      */
     @GetMapping("/followers/count")
-    public long getFollowersCount(@RequestParam Long userId) {
+    public long getFollowersCount(@RequestParam long userId) {
         return service.getFollowersCount(userId);
     }
 }

@@ -3,9 +3,12 @@ package com.example.blog.Controller;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.example.blog.Entity.SignUp;
+import com.example.blog.Entity.User;
 import com.example.blog.Service.SignUpService;
 
 @RestController
@@ -15,7 +18,7 @@ public class SignUpController {
     private SignUpService signupService;
 
     @PostMapping("/signup")
-    public ResponseEntity<?> signup(@RequestBody SignUp body) {
+    public ResponseEntity<?> signup(@RequestBody User body) {
         try {
             if (body.getEmailId() == null || body.getEmailId().isEmpty() || 
                 body.getPassword() == null || body.getPassword().isEmpty() || 

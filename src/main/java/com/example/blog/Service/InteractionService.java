@@ -2,14 +2,16 @@ package com.example.blog.Service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+
 import com.example.blog.Entity.InteractionEntity;
 import com.example.blog.Entity.Post;
-import com.example.blog.Entity.SignUp;
+import com.example.blog.Entity.User;
 import com.example.blog.Repository.InteractionRepository;
 import com.example.blog.Repository.PostRepository;
-import com.example.blog.Repository.SignUpRepository;
+import com.example.blog.Repository.UserRepository;
 
 @Service
 public class InteractionService {
@@ -21,7 +23,7 @@ public class InteractionService {
     private PostRepository postRepository;
     
     @Autowired
-    private SignUpRepository signUpRepository;
+    private UserRepository userRepository;
 
     public void toggleLike(Long postId, Long userId) {
 
@@ -38,7 +40,7 @@ public class InteractionService {
         InteractionEntity i = new InteractionEntity();
         if (postId != null && userId != null) {
             Optional<Post> post = postRepository.findById(postId);
-            Optional<SignUp> user = signUpRepository.findById(userId);
+            Optional<User> user = userRepository.findById(userId);
             
             if (post.isPresent() && user.isPresent()) {
                 i.setPost(post.get());
@@ -55,7 +57,7 @@ public class InteractionService {
         InteractionEntity i = new InteractionEntity();
         if (postId != null && userId != null) {
             Optional<Post> post = postRepository.findById(postId);
-            Optional<SignUp> user = signUpRepository.findById(userId);
+            Optional<User> user = userRepository.findById(userId);
             
             if (post.isPresent() && user.isPresent()) {
                 i.setPost(post.get());

@@ -1,16 +1,21 @@
 package com.example.blog.Service;
 
-import com.example.blog.Entity.Followers;
-import com.example.blog.Entity.User;
-import com.example.blog.Repository.FollowRepository;
-import com.example.blog.Repository.UserRepository;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.util.*;
+import com.example.blog.Entity.Followers;
+import com.example.blog.Entity.User;
+import com.example.blog.Repository.FollowRepository;
+import com.example.blog.Repository.UserRepository;
 
 @Service
 @Transactional
@@ -25,7 +30,7 @@ public class FollowService {
     /**
      * Follow a user
      */
-    public Map<String, Object> followUser(Long followerId, Long followedUserId) {
+    public Map<String, Object> followUser(@NonNull Long followerId, @NonNull Long followedUserId) {
         Map<String, Object> response = new HashMap<>();
 
         // Validate follower exists
@@ -71,7 +76,7 @@ public class FollowService {
     /**
      * Unfollow a user
      */
-    public Map<String, String> unfollowUser(Long followerId, Long followedUserId) {
+    public Map<String, String> unfollowUser(@NonNull Long followerId, @NonNull Long followedUserId) {
         Map<String, String> response = new HashMap<>();
 
         // Check if follow relationship exists
@@ -90,14 +95,14 @@ public class FollowService {
     /**
      * Check if user is following another user
      */
-    public boolean isFollowing(Long followerId, Long followedId) {
+    public boolean isFollowing(@NonNull Long followerId, @NonNull Long followedId) {
         return followRepository.existsByFollowerIdAndFollowedId(followerId, followedId);
     }
 
     /**
      * Get list of users that a user is following
      */
-    public List<Map<String, Object>> getFollowingList(Long userId) {
+    public List<Map<String, Object>> getFollowingList(@NonNull Long userId) {
         List<Followers> following = followRepository.findByFollowerId(userId);
         List<Map<String, Object>> followingList = new ArrayList<>();
 
@@ -106,7 +111,7 @@ public class FollowService {
             Map<String, Object> userMap = new HashMap<>();
             userMap.put("id", followedUser.getId());
             userMap.put("name", followedUser.getName());
-            userMap.put("email", followedUser.getEmail());
+            userMap.put("email", followedUser.getEmailId());
             followingList.add(userMap);
         }
 
@@ -116,7 +121,7 @@ public class FollowService {
     /**
      * Get list of followers of a user
      */
-    public List<Map<String, Object>> getFollowersList(Long userId) {
+    public List<Map<String, Object>> getFollowersList(@NonNull Long userId) {
         List<Followers> followers = followRepository.findByFollowedId(userId);
         List<Map<String, Object>> followersList = new ArrayList<>();
 
@@ -125,7 +130,7 @@ public class FollowService {
             Map<String, Object> userMap = new HashMap<>();
             userMap.put("id", followerUser.getId());
             userMap.put("name", followerUser.getName());
-            userMap.put("email", followerUser.getEmail());
+            userMap.put("email", followerUser.getEmailId());
             followersList.add(userMap);
         }
 
@@ -135,14 +140,14 @@ public class FollowService {
     /**
      * Get count of users that a user is following
      */
-    public long getFollowingCount(Long userId) {
+    public long getFollowingCount(@NonNull Long userId) {
         return followRepository.countByFollowerId(userId);
     }
 
     /**
      * Get count of followers of a user
      */
-    public long getFollowersCount(Long userId) {
+    public long getFollowersCount(@NonNull Long userId) {
         return followRepository.countByFollowedId(userId);
     }
 }

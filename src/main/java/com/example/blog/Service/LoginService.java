@@ -3,19 +3,20 @@ package com.example.blog.Service;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.example.blog.Entity.SignUp;
-import com.example.blog.Repository.SignUpRepository;
+
+import com.example.blog.Entity.User;
+import com.example.blog.Repository.UserRepository;
 
 @Service
 public class LoginService {
     @Autowired
-    private SignUpRepository signUpRepo;
+    private UserRepository userRepository;
     
     @Autowired
     private PasswordEncoder passwordEncoder;
 
     public boolean authenticate(String emailId, String password) {
-        SignUp user = signUpRepo.findByEmailId(emailId);
+        User user = userRepository.findByEmailId(emailId).orElse(null);
         
         if (user == null) {
             return false;

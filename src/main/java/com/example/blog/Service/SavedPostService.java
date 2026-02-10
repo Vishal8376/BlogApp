@@ -1,17 +1,17 @@
 package com.example.blog.Service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.example.blog.Entity.SavedPost;
-import com.example.blog.Entity.SignUp;
 import com.example.blog.Entity.Post;
-import com.example.blog.Repository.SavedPostRepository;
-import com.example.blog.Repository.SignUpRepository;
+import com.example.blog.Entity.SavedPost;
+import com.example.blog.Entity.User;
 import com.example.blog.Repository.PostRepository;
-
-import java.util.List;
-import java.util.Optional;
+import com.example.blog.Repository.SavedPostRepository;
+import com.example.blog.Repository.UserRepository;
 
 @Service
 public class SavedPostService {
@@ -20,14 +20,14 @@ public class SavedPostService {
     private SavedPostRepository savedPostRepository;
     
     @Autowired
-    private SignUpRepository signUpRepository;
+    private UserRepository userRepository;
     
     @Autowired
     private PostRepository postRepository;
 
     public SavedPost savePost(Long userId, Long postId) {
         if (userId != null && postId != null) {
-            Optional<SignUp> user = Optional.ofNullable(signUpRepository.findById(userId).orElse(null));
+            Optional<User> user = userRepository.findById(userId);
             Optional<Post> post = postRepository.findById(postId);
             
             if (user.isPresent() && post.isPresent()) {
