@@ -14,13 +14,13 @@ public class LoginController {
     private LoginService loginService;
 
     @PostMapping("/login")
-    public ResponseEntity<?> login(@RequestParam String emailId, @RequestParam String password) {
+    public ResponseEntity<?> login(@RequestParam String email, @RequestParam String password) {
         try {
-            if (emailId == null || emailId.isEmpty() || password == null || password.isEmpty()) {
+            if (email == null || email.isEmpty() || password == null || password.isEmpty()) {
                 return ResponseEntity.badRequest().body("Email and password are required");
             }
             
-            boolean isAuthenticated = loginService.authenticate(emailId, password);
+            boolean isAuthenticated = loginService.authenticate(email, password);
             
             if (isAuthenticated) {
                 return ResponseEntity.ok("Login successful");

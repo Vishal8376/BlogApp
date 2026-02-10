@@ -25,6 +25,7 @@ public class FollowService {
     /**
      * Follow a user
      */
+    @SuppressWarnings("null")
     public Map<String, Object> followUser(Long followerId, Long followedUserId) {
         Map<String, Object> response = new HashMap<>();
 
