@@ -197,7 +197,7 @@ DELETE /api/user/{id}
 git clone https://github.com/your-username/blogit.git
 cd blogit
 
-###2️⃣ Configure Database
+### 2️⃣ Configure Database
 Update application.properties:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/blogit
@@ -205,7 +205,7 @@ spring.datasource.username=root
 spring.datasource.password=yourpassword
 spring.jpa.hibernate.ddl-auto=update
 
-###3️⃣ Run the Application
+### 3️⃣ Run the Application
 
 mvn spring-boot:run
 
