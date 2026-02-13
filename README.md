@@ -198,6 +198,7 @@ git clone https://github.com/your-username/blogit.git
 cd blogit
 
 ### 2️⃣ Configure Database
+
 Update application.properties:
 
 spring.datasource.url=jdbc:mysql://localhost:3306/blogit
@@ -212,6 +213,7 @@ mvn spring-boot:run
 Server runs at: http://localhost:8080
 
 🔐 Security Features
+
 Password hashing using BCrypt
 
 Secured REST endpoints
@@ -221,6 +223,7 @@ Layered architecture for separation of concerns
 Service-level validation
 
 📈 Project Vision
+
 BlogIt transitions from a secure CRUD blogging platform into an AI-powered, real-time, socially connected content ecosystem.
 
 It integrates:
@@ -236,17 +239,18 @@ AI-driven enhancements
 Scalable backend architecture
 
 👨‍💻 Team
-Thanushree
 
-Sailesh
+Thanushree Vijayakanth
 
-Vishal
+Saileshwaran Ganesan
 
-Venkat
+Vishal S
 
-Rohit
+Venkatachalam S
 
-Tauqir
+Rohit GP
+
+Tauqir Ahmed S
 
 📄 License
 This project is developed for academic and learning purposes.
