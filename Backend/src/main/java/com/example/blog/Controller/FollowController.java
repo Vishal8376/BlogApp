@@ -28,7 +28,7 @@ public class FollowController {
                                       @RequestParam long followedUserId) {
         return service.followUser(followerId, followedUserId);
     }
-
+            
     /**
      * Unfollow a user
      * DELETE /api/follow?followerId=1&followedUserId=5
