@@ -2,20 +2,24 @@ import { useState } from 'react';
 import { useAuth } from '../Contexts/AuthContext';
 import { useNavigate, Link } from 'react-router-dom';
 import NetworkAnimation from '../Components/NetworkAnimation';
+// import { loginUser } from "../Services/authService";
 
 export default function Login() {
-  const [creds, setCreds] = useState({ username: '', password: '' });
+  const [creds, setCreds] = useState({ email: '', password: '' });
   const { login } = useAuth();
   const navigate = useNavigate();
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+
+
+  // handleLogin removed: login is handled via context's login function
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
     setError('');
     try {
-      await login(creds.username, creds.password);
+      await login(creds.email, creds.password);
       navigate('/home');
     } catch (err) {
       setError(err.message || 'Login failed');
@@ -59,10 +63,10 @@ export default function Login() {
             <div className="input-wrapper">
               <input 
                 type="text" 
-                placeholder="Username" 
+                placeholder="Email" 
                 className="input"
-                value={creds.username}
-                onChange={(e) => setCreds({...creds, username: e.target.value})}
+                value={creds.email}
+                onChange={(e) => setCreds({...creds, email: e.target.value})}
                 disabled={loading}
               />
             </div>

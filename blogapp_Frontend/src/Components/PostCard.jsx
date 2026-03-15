@@ -1,6 +1,6 @@
 import { Heart, MessageSquare, Trash2 } from 'lucide-react';
 import { useState } from 'react';
-import { mockApi } from '../Services/api';
+
 import { useAuth } from '../Contexts/AuthContext';
 
 export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
@@ -15,9 +15,10 @@ export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
     if (isLiking) return;
     setIsLiking(true);
     
-    const result = await mockApi.toggleLike(post.id);
-    onLike(post.id, result.liked, result.likes);
-    
+    // TODO: Integrate with backend like API
+    // Example: await likePost(post.id)
+    // For now, just simulate like
+    onLike(post.id, true, (post.likes || 0) + 1);
     setTimeout(() => setIsLiking(false), 300);
   };
 
@@ -40,7 +41,8 @@ export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
     setShowComments(true);
     
     // Sync with backend
-    await mockApi.addComment(post.id, commentText);
+    // TODO: Integrate with backend comment API
+    // Example: await addComment(post.id, commentText)
     
     // Notify parent to refresh
     if (onCommentAdded) onCommentAdded();
@@ -48,7 +50,8 @@ export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
 
   const handleDelete = async () => {
     if (window.confirm('Are you sure you want to delete this post?')) {
-      await mockApi.deletePost(post.id);
+      // TODO: Integrate with backend delete API
+      // Example: await deletePost(post.id)
       if (onDelete) onDelete(post.id);
     }
   };

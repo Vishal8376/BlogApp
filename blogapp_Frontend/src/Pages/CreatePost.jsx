@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { mockApi } from '../Services/api';
+
 import { useAuth } from '../Contexts/AuthContext';
 import { Image as ImageIcon, X, Link as LinkIcon } from 'lucide-react';
 
@@ -45,7 +45,8 @@ export default function CreatePost() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true);
-    await mockApi.createPost(formData);
+    // TODO: Integrate with backend createPost API
+    // Example: await createPost(formData)
     setLoading(false);
     navigate('/home');
   };

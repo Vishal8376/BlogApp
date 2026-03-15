@@ -14,21 +14,26 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import jakarta.servlet.http.HttpServletRequest;
+import com.example.blog.Service.CustomUserDetails;
 
 @RestController
 @RequestMapping("/api")
 public class LoginController {
     @Autowired
     private AuthenticationManager authenticationManager;
+    
+    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestParam String emailId, @RequestParam String password,
             HttpServletRequest request) {
         try {
             if (emailId == null || emailId.isEmpty() || password == null || password.isEmpty()) {
-                return ResponseEntity.badRequest().body("Email and password are required");
+                return ResponseEntity.badRequest().body(java.util.Map.of("message", "Email and password are required"));
             }
             
             Authentication authentication = authenticationManager.authenticate(
@@ -43,14 +48,24 @@ public class LoginController {
                     HttpSessionSecurityContextRepository.SPRING_SECURITY_CONTEXT_KEY,
                     context
                 );
-                return ResponseEntity.ok("Login successful");
+                
+                CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
+                java.util.Map<String, Object> responseBody = new java.util.HashMap<>();
+                responseBody.put("message", "Login successful");
+                responseBody.put("user", userDetails.getUser());
+                responseBody.put("token", request.getSession().getId());
+                
+                return ResponseEntity.ok(responseBody);
             } else {
-                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+                return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(java.util.Map.of("message", "Invalid email or password"));
             }
         } catch (AuthenticationException e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("Invalid email or password");
+            logger.error("Authentication failed for email: {}, Error: {}", emailId, e.getMessage());
+            e.printStackTrace();
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(java.util.Map.of("message", "Invalid email or password"));
         } catch (IllegalArgumentException e) {
-            return ResponseEntity.badRequest().body("Login failed: " + e.getMessage());
+            logger.error("Illegal argument error: {}", e.getMessage());
+            return ResponseEntity.badRequest().body(java.util.Map.of("message", "Login failed: " + e.getMessage()));
         }
     }
 } 

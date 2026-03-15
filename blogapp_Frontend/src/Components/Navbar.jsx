@@ -2,7 +2,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import { useAuth } from '../Contexts/AuthContext';
 import { Search, PenSquare, LogOut, User, Home } from 'lucide-react';
 import { useState, useEffect, useRef } from 'react';
-import { mockApi } from '../Services/api';
+
 
 export default function Navbar() {
   const { user, logout, isAuthenticated } = useAuth();
@@ -25,7 +25,8 @@ export default function Navbar() {
 
   useEffect(() => {
     if (searchQuery.trim().length > 0) {
-      mockApi.searchUsers(searchQuery).then(setSearchResults);
+      // TODO: Replace with real API call
+      setSearchResults([]); // No backend search implemented yet
       setShowDropdown(true);
     } else {
       setSearchResults([]);

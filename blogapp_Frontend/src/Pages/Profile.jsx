@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useAuth } from '../Contexts/AuthContext';
-import { mockApi } from '../Services/api';
+
 import { useNavigate, useParams } from 'react-router-dom';
 import { Edit2, Image as ImageIcon, Users, UserCheck, X, Grid3X3, Heart, MessageSquare } from 'lucide-react';
 
@@ -33,7 +33,8 @@ export default function Profile() {
         }
 
         const targetUsername = username || user.username;
-        const profile = await mockApi.getProfile(targetUsername);
+        // TODO: Integrate with backend getProfile API
+        const profile = null;
         
         if (!profile) {
           setLoading(false);
@@ -46,11 +47,13 @@ export default function Profile() {
         const isCurrent = !username || username === user.username;
         setIsCurrentUser(isCurrent);
         
-        const posts = await mockApi.getPostsByUser(profile.id);
+        // TODO: Integrate with backend getPostsByUser API
+        const posts = [];
         setUserPosts(posts || []);
         
         if (!isCurrent) {
-          const following = await mockApi.checkFollowing(profile.id);
+          // TODO: Integrate with backend checkFollowing API
+          const following = false;
           setIsFollowing(following);
         }
         
@@ -84,12 +87,14 @@ export default function Profile() {
       if (editData.bio) updates.bio = editData.bio;
       if (editData.profileImage) updates.profileImage = editData.profileImage;
       
-      const updatedUser = await mockApi.updateUserProfile(user.id, updates);
+      // TODO: Integrate with backend updateUserProfile API
+      const updatedUser = null;
       updateUser(updatedUser);
       setEditing(false);
       setImagePreview(null);
       
-      const profile = await mockApi.getProfile(user.username);
+      // TODO: Integrate with backend getProfile API
+      const profile = null;
       setProfileData(profile);
     } catch (err) {
       console.error('Save profile error:', err);
@@ -98,7 +103,8 @@ export default function Profile() {
 
   const handleFollow = async () => {
     try {
-      const result = await mockApi.toggleFollow(profileData.id);
+      // TODO: Integrate with backend toggleFollow API
+      const result = null;
       setIsFollowing(result.isFollowing);
       setProfileData({...profileData, followers: result.followers});
     } catch (err) {
@@ -107,20 +113,23 @@ export default function Profile() {
   };
 
   const openFollowersModal = async () => {
-    const followers = await mockApi.getFollowers(profileData.id);
+    // TODO: Integrate with backend getFollowers API
+    const followers = [];
     setFollowersList(followers || []);
     setShowFollowers(true);
   };
 
   const openFollowingModal = async () => {
-    const following = await mockApi.getFollowing(profileData.id);
+    // TODO: Integrate with backend getFollowing API
+    const following = [];
     setFollowingList(following || []);
     setShowFollowing(true);
   };
 
   const handleFollowFromModal = async (targetUserId) => {
-    await mockApi.toggleFollow(targetUserId);
-    const profile = await mockApi.getProfile(profileData.username);
+    // TODO: Integrate with backend toggleFollow API
+    // TODO: Integrate with backend getProfile API
+    const profile = null;
     setProfileData(profile);
   };
 

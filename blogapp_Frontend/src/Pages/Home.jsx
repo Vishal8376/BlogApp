@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { mockApi } from '../Services/api';
+
 import { useAuth } from '../Contexts/AuthContext';
 import PostCard from '../Components/PostCard';
 import { TrendingUp, Users, Zap, Heart } from 'lucide-react';
@@ -21,16 +21,9 @@ export default function Home() {
     const loadData = async () => {
       try {
         setLoading(true);
-        const data = await mockApi.getPosts();
-        setPosts(data || []);
-        
-        const totalLikes = data?.reduce((sum, post) => sum + (post.likes || 0), 0) || 0;
-        const users = await mockApi.getAllUsers();
-        setStats({
-          totalPosts: data?.length || 0,
-          totalUsers: (users?.length || 0) + 1,
-          totalLikes: totalLikes
-        });
+        // TODO: Replace with real backend API calls
+        setPosts([]); // No backend integration yet
+        setStats({ totalPosts: 0, totalUsers: 0, totalLikes: 0 });
       } catch (err) {
         console.error('Error loading home ', err);
       } finally {

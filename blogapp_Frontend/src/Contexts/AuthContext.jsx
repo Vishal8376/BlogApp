@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import { mockApi } from '../Services/api';
+import { loginUser } from '../Services/authService';
 
 const AuthContext = createContext(null);
 
@@ -52,9 +52,17 @@ export const AuthProvider = ({ children }) => {
   const login = async (username, password) => {
     try {
       console.log('🔑 Attempting login for:', username);
-      const data = await mockApi.login(username, password);
-      setUser(data.user);
-      console.log('✅ Login successful:', data.user.username);
+      const data = await loginUser({ emailId: username, password });
+      // If backend returns user info, store it. If not, just set a dummy user or handle as needed.
+      if (data && data.user) {
+        setUser(data.user);
+        localStorage.setItem('user', JSON.stringify(data.user));
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+      }
+      // If backend returns only a message, you may want to fetch user info separately
+      console.log('✅ Login response:', data);
       return data;
     } catch (error) {
       console.error('❌ Login error:', error.message);
@@ -65,9 +73,11 @@ export const AuthProvider = ({ children }) => {
   const register = async (userData) => {
     try {
       console.log('📝 Attempting registration for:', userData.username);
-      const newUser = await mockApi.register(userData);
+      // TODO: Integrate with backend register API
+      // Example: const newUser = await registerUser(userData)
+      const newUser = null;
       setUser(newUser);
-      console.log('✅ Register successful:', newUser.username);
+      console.log('✅ Register successful:', newUser?.username);
       return newUser;
     } catch (error) {
       console.error('❌ Register error:', error.message);
