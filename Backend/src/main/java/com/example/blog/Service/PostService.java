@@ -30,6 +30,9 @@ public class PostService {
         }
 
         post.setUser(user);
+        post.setUsername(user.getName());
+        post.setAuthor(user.getName());
+        
         return postRepository.save(post);
     }
 

@@ -20,7 +20,7 @@ export const AuthProvider = ({ children }) => {
         if (storedUser && token) {
           try {
             const parsedUser = JSON.parse(storedUser);
-            if (parsedUser && parsedUser.id) {
+            if (parsedUser) {
               setUser(parsedUser);
               console.log('✅ User loaded:', parsedUser.username);
             } else {
@@ -50,25 +50,30 @@ export const AuthProvider = ({ children }) => {
   }, []);
 
   const login = async (username, password) => {
-    try {
-      console.log('🔑 Attempting login for:', username);
-      const data = await loginUser({ emailId: username, password });
-      // If backend returns user info, store it. If not, just set a dummy user or handle as needed.
-      if (data && data.user) {
-        setUser(data.user);
-        localStorage.setItem('user', JSON.stringify(data.user));
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
-      }
-      // If backend returns only a message, you may want to fetch user info separately
-      console.log('✅ Login response:', data);
-      return data;
-    } catch (error) {
-      console.error('❌ Login error:', error.message);
-      throw error;
+  try {
+    console.log("🔑 Attempting login for:", username);
+
+    const data = await loginUser({
+      emailId: username,
+      password
+    });
+
+    console.log("✅ Login response:", data);
+
+    if (data && data.user) {
+      setUser(data.user);
+
+      localStorage.setItem("user", JSON.stringify(data.user));
+      localStorage.setItem("token", data.token);
     }
-  };
+
+    return data;
+
+  } catch (error) {
+    console.error("❌ Login error:", error.message);
+    throw error;
+  }
+};
 
   const register = async (userData) => {
     try {
