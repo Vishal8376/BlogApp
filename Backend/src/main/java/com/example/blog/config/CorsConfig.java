@@ -14,9 +14,10 @@ public class CorsConfig {
             public void addCorsMappings(CorsRegistry registry) {
 
                 registry.addMapping("/**")
-                        .allowedOrigins("https://blog-app-livid-alpha.vercel.app/")
+                        .allowedOrigins("https://blog-app-livid-alpha.vercel.app")
                         .allowedMethods("GET","POST","PUT","DELETE","OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedHeaders("*")
+                        .allowCredentials(true);
             }
         };
     }
