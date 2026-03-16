@@ -1,258 +1,136 @@
-# 🚀 BlogIt – AI-Enhanced Social Blogging Platform
+# 🚀 BlogIt – Premium Full-Stack Social Blogging Platform
 
-> A secure, scalable, and extensible social news hub built with Spring Boot, MySQL, and Spring Security.  
-> BlogIt evolves from a robust CRUD blogging system into a feature-rich AI-powered social platform.
-
----
-
-## 📌 Project Overview
-
-BlogIt is a backend-driven social blogging application that allows users to:
-
-- Create, update, and delete blog posts
-- Like and comment on posts
-- Follow other users
-- Save posts for later reference
-- Search content with intelligent filtering
-- Securely manage user accounts
-
-The application follows a strict layered architecture to ensure maintainability, scalability, and clean separation of concerns.
+> A modern, secure, and feature-rich social ecosystem built with **Spring Boot 3**, **React 19**, and **MySQL**.  
+> BlogIt combines robust backend services with a premium, glassmorphism-inspired frontend to deliver a seamless content creation and discovery experience.
 
 ---
 
-## 🏗️ Architecture
+## 🎨 Preview & Aesthetics
 
-The system follows a 5-layer architecture:
+BlogIt features a **Premium Dark Theme** with:
+- **Glassmorphism**: Translucent panels with backdrop blurs.
+- **Dynamic Gradients**: Vibrant, animated accent colors.
+- **Micro-animations**: Smooth transitions and hover effects for a premium feel.
+- **Responsive Design**: Fully optimized for mobile, tablet, and desktop views.
 
-Controller → Service → Repository → Entity → Database  
-                             ↓  
-                       Security Layer  
+---
 
-### 🔹 Controller Layer
-Handles REST API requests and responses.
+## 🏗️ Technical Architecture
 
-### 🔹 Service Layer
-Contains business logic and validation rules.
+The system is split into two primary modules following modern full-stack best practices.
 
-### 🔹 Repository Layer
-Uses Spring Data JPA (Hibernate) to interact with MySQL.
+### 🔹 Backend (Spring Boot)
+Follows a structured 5-layer architecture:
+`Controller → Service → Repository → Entity → Database`
+- **Security Layer**: Integrated Spring Security with BCrypt hashing.
+- **Persistence**: Using Hibernate (JPA) for efficient MySQL interaction.
+- **Dev Speed**: Hot-reloading enabled via Spring Boot DevTools.
 
-### 🔹 Entity Layer
-Defines database models and relationships.
+### 🔹 Frontend (React)
+A fast, single-page application (SPA) built with:
+- **Vite & React 19**: Blazing fast development and rendering.
+- **React Router 7**: Intelligent client-side routing, including **Dynamic Profile Slugs** (`/profile/userId-name`).
+- **Axios**: Centralized API service with custom interceptors.
+- **Lucide React**: Crisp, modern iconography.
 
-### 🔹 Security Layer
-Implements:
-- Spring Security
-- BCrypt password encryption
-- Authentication and authorization
+---
+
+## 🌟 Key Features
+
+### 🔍 Unified Global Search
+- Real-time search for **both Users and Posts** directly from the Navbar.
+- Categorized results dropdown with instant navigation.
+
+### 👤 Social & Following
+- **Follow System**: Live follow/unfollow functionality with real-time count updates.
+- **Follow Bak UI**: Smart detection in followers modals to show "Follow Back" vs "Following" status.
+- **Follower Removal**: Ability to manage your followers list directly.
+
+### 📝 Content Management
+- **Full CRUD**: Create, Edit, and Delete posts with a streamlined UI.
+- **Interactions**: Like toggle and Commenting system with **Optimistic UI updates**.
+- **Categorization**: Filter content by specific blog categories.
+
+### 🛡️ Secure User Management
+- **Authentication**: Secure Login and Signup flows.
+- **Profile Customization**: Edit display name, bio, and profile pictures.
+- **Dynamic Routing**: SEO-friendly and user-readable URLs using IDs and Names.
 
 ---
 
 ## 🗄️ Database Schema
 
-### 👤 Users
-- id
-- name
-- email
-- password (BCrypt encrypted)
-- bio
-- profile_pic
-
-### 📝 Posts
-- id
-- user_id
-- author
-- description
-- category
-- image
-- hashtags
-- created_at
-
-### 💬 Interactions
-- id
-- user_id
-- post_id
-- comment
-- is_like
-- time
-
-### 👥 Followers
-- id
-- follower_id
-- followed_id
-
-### 🔖 SavedPosts
-- id
-- user_id
-- post_id
-
----
-
-## 🔗 Relationships
-
-- User → Posts (One-to-Many)
-- User → Interactions (One-to-Many)
-- Post → Interactions (One-to-Many)
-- Users ↔ Users (Follow System – Many-to-Many)
-- User → SavedPosts (One-to-Many)
-- Post → SavedPosts (One-to-Many)
-
----
-
-## 🌐 REST API Endpoints
-
-### 🔐 Authentication
-
-POST /api/signup
-POST /api/login
-
-
----
-
-### 📝 Posts
-
-GET /api/posts/all
-POST /api/posts/create
-GET /api/posts/category/{category}
-DELETE /api/posts/delete/{id}
-
-
----
-
-### 💬 Interactions
-
-POST /api/interactions/like
-POST /api/interactions/comment
-
-
----
-
-### 🔖 Saved Posts
-
-POST /api/saved-posts/user/{userId}/post/{postId}
-GET /api/saved-posts/user/{userId}
-DELETE /api/saved-posts/delete/{savedPostId}
-
-
----
-
-### 🔍 Search & Discovery
-
-GET /api/search?q={query}
-GET /api/search/suggest?prefix={prefix}
-
-
----
-
-### 👤 User Management
-
-GET /api/user/{id}
-PUT /api/user/{id}
-PUT /api/user/{id}/password
-PUT /api/user/{id}/email
-DELETE /api/user/{id}
-
-
----
-
-## 📦 Version History
-
-### ✅ Version 1.0 – Core Foundation
-- Secure authentication with BCrypt  
-- Blog CRUD operations  
-- Likes and comments  
-- MySQL data persistence  
-
-### ✅ Version 1.1 – Social Enhancements
-- Follow system  
-- Saved posts  
-- Advanced search with autocomplete  
-- User profile management  
-
-### 🔮 Planned Enhancements
-- Direct Messaging (Instagram/LinkedIn style)  
-- Real-time notifications  
-- WebSocket integration  
-- AI-powered post summarization and translation using Gemini API  
+| Table | Primary Keys/Fields | Description |
+| :--- | :--- | :--- |
+| **Users** | `id`, `name`, `emailId`, `password`, `bio`, `profilePicUrl` | Core user account data (Passwords BCrypt hashed). |
+| **Posts** | `id`, `user_id`, `description`, `category`, `image`, `hashtags` | User-generated content. |
+| **Interactions**| `id`, `user_id`, `post_id`, `comment`, `isLike` | Tracking likes and user comments. |
+| **Followers** | `id`, `follower_id`, `followed_id` | Managing social relationships between users. |
+| **SavedPosts** | `id`, `user_id`, `post_id` | Personal bookmarks for users. |
 
 ---
 
 ## 🛠️ Tech Stack
 
-| Layer        | Technology                  |
-|--------------|----------------------------|
-| Backend      | Spring Boot                |
-| Database     | MySQL                      |
-| ORM          | Hibernate (JPA)            |
-| Security     | Spring Security + BCrypt   |
-| Build Tool   | Maven                      |
-| AI (Planned) | Gemini API                 |
-| Real-Time    | WebSockets (Planned)       |
+### Backend
+- **Core**: Spring Boot 3.5.10 (Java 17)
+- **Security**: Spring Security + BCrypt
+- **Database**: MySQL 8+
+- **Dev Tools**: Lombok, Spring Boot DevTools
 
+### Frontend
+- **Core**: React 19 (Vite)
+- **Routing**: React Router 7
+- **Icons**: Lucide React
+- **Styling**: Vanilla CSS (Custom Glassmorphism)
+
+---
 
 ## 🚀 Getting Started
 
-### 1️⃣ Clone the Repository
+### 1️⃣ Clone and Setup Backend
+1. Clone the repository and navigate to the `backend` folder.
+2. Update `src/main/resources/application.properties` with your MySQL credentials:
+   ```properties
+   spring.datasource.url=jdbc:mysql://localhost:3306/blogit
+   spring.datasource.username=YOUR_USERNAME
+   spring.datasource.password=YOUR_PASSWORD
+   ```
+3. Run the backend:
+   ```bash
+   mvn spring-boot:run
+   ```
 
-git clone https://github.com/your-username/blogit.git
-cd blogit
+### 2️⃣ Setup Frontend
+1. Navigate to the `frontend` folder.
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the development server:
+   ```bash
+   npm run dev
+   ```
 
-### 2️⃣ Configure Database
+---
 
-Update application.properties:
+## 📈 Project Vision
+BlogIt is evolving into an AI-powered content ecosystem. Upcoming features include:
+- **AI Tools**: Gemini API integration for post summarization and tags.
+- **Real-Time**: WebSockets for instant notifications and chat.
+- **Advanced UX**: Video backgrounds and enhanced media handling.
 
-spring.datasource.url=jdbc:mysql://localhost:3306/blogit
-spring.datasource.username=root
-spring.datasource.password=yourpassword
-spring.jpa.hibernate.ddl-auto=update
+---
 
-### 3️⃣ Run the Application
+## 👨‍💻 Development Team
+- Thanushree Vijayakanth
+- Saileshwaran Ganesan
+- Vishal S
+- Venkatachalam S
+- Rohit GP
+- Tauqir Ahmed S
 
-mvn spring-boot:run
+---
 
-Server runs at: http://localhost:8080
-
-🔐 Security Features
-
-Password hashing using BCrypt
-
-Secured REST endpoints
-
-Layered architecture for separation of concerns
-
-Service-level validation
-
-📈 Project Vision
-
-BlogIt transitions from a secure CRUD blogging platform into an AI-powered, real-time, socially connected content ecosystem.
-
-It integrates:
-
-Content creation
-
-Social networking
-
-Intelligent discovery
-
-AI-driven enhancements
-
-Scalable backend architecture
-
-👨‍💻 Team
-
-Thanushree Vijayakanth
-
-Saileshwaran Ganesan
-
-Vishal S
-
-Venkatachalam S
-
-Rohit GP
-
-Tauqir Ahmed S
-
-📄 License
+## 📄 License
 This project is developed for academic and learning purposes.
-
-
