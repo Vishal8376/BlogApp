@@ -30,7 +30,6 @@ public class PostService {
         }
 
         post.setUser(user);
-        post.setUsername(user.getName());
         post.setAuthor(user.getName());
         
         return postRepository.save(post);
@@ -42,6 +41,35 @@ public class PostService {
 
     public List<Post> getPostsByCategory(String category) {
         return postRepository.findByCategory(category);
+    }
+
+    public List<Post> getPostsByUserId(Long userId) {
+        return postRepository.findByUserId(userId);
+    }
+
+    public Post getPostById(Long id) {
+        return postRepository.findById(id).orElse(null);
+    }
+
+    public Post updatePost(Long id, Post updatedPost, String emailId) {
+        Post existingPost = postRepository.findById(id).orElse(null);
+        if (existingPost == null) {
+            throw new IllegalStateException("Post not found");
+        }
+
+        User user = userRepository.findByEmailId(emailId).orElse(null);
+        if (user == null || existingPost.getUser().getId() != user.getId()) {
+            throw new IllegalStateException("User not authorized to update this post");
+        }
+
+        existingPost.setDescription(updatedPost.getDescription());
+        existingPost.setCategory(updatedPost.getCategory());
+        existingPost.setHashtags(updatedPost.getHashtags());
+        if (updatedPost.getImage() != null) {
+            existingPost.setImage(updatedPost.getImage());
+        }
+
+        return postRepository.save(existingPost);
     }
 
     public void deletePost(Long id) {

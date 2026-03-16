@@ -1,4 +1,4 @@
-package com.example.blog.config;
+    package com.example.blog.config;
 
 import java.util.List;
 
@@ -17,6 +17,7 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 
 import com.example.blog.Service.CustomUserDetailsService;
 
@@ -63,7 +64,6 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/api/login", "/api/signup").permitAll()
-                .requestMatchers(HttpMethod.POST, "/api/posts/create").authenticated()
                 .anyRequest().permitAll()
             )
             .sessionManagement(session -> session.sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED))

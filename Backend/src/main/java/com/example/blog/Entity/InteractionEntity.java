@@ -2,6 +2,9 @@ package com.example.blog.Entity;
 
 import java.time.LocalDateTime;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -36,10 +39,12 @@ public class InteractionEntity {
     // Many Interactions belong to One Post
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id", nullable = false)
+    @JsonIgnore
     private Post post;
     
     // Many Interactions are made by One User
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
+    @JsonIgnoreProperties({"posts", "password", "emailId", "bio", "profilePicUrl", "interactions", "savedPosts"})
     private User user;
 }

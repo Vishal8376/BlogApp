@@ -22,7 +22,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @Table(name = "users")
-@JsonIgnoreProperties({"posts", "interactions", "savedPosts"})
+@JsonIgnoreProperties({"posts", "interactions", "savedPosts", "hibernateLazyInitializer", "handler"})
 public class User {
     @Id
     @GeneratedValue(strategy=GenerationType.IDENTITY)
@@ -41,7 +41,7 @@ public class User {
     @Column(length = 500)
     private String bio;
     
-    @Column(length = 255)
+    @Column(columnDefinition = "LONGTEXT")
     private String profilePicUrl;
     
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)

@@ -39,6 +39,7 @@ public class Post {
     @Column(columnDefinition = "LONGTEXT", nullable = false)
     private String description;
 
+    @Column(columnDefinition = "LONGTEXT")
     private String image;
 
     @Column(nullable = false)
