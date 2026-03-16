@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://localhost:8090/api",
+  baseURL: `${import.meta.env.VITE_API_URL}/api`,
   withCredentials: true,
   headers: {
     "Content-Type": "application/json",
@@ -14,6 +14,7 @@ api.interceptors.request.use((config) => {
   if (token) {
     config.headers["X-Auth-Token"] = token;
   }
+
   const user = localStorage.getItem("user");
   if (user) {
     try {
@@ -21,8 +22,9 @@ api.interceptors.request.use((config) => {
       if (parsed && parsed.emailId) {
         config.headers["X-User-Email"] = parsed.emailId;
       }
-    } catch (e) { /* ignore */ }
+    } catch (e) {}
   }
+
   return config;
 });
 
