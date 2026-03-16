@@ -27,6 +27,10 @@ public class UserService {
         return userRepo.findByEmailId(email);
     }
 
+    public java.util.List<User> searchUsers(String keyword) {
+        return userRepo.searchUsers(keyword);
+    }
+
     @SuppressWarnings("null")
     public User updateUserProfile(Long userId, User updatedUser) {
         Optional<User> existingUser = userRepo.findById(userId);

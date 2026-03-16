@@ -2,6 +2,7 @@ import { Heart, MessageSquare, Trash2 } from 'lucide-react';
 import { useState } from 'react';
 
 import { useAuth } from '../Contexts/AuthContext';
+import { addComment } from '../Services/postService';
 
 export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
   const [commentText, setCommentText] = useState('');
@@ -24,8 +25,9 @@ export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
     if (!commentText.trim()) return;
     
     // Optimistic update - add comment immediately
+    const tempId = Date.now();
     const newComment = {
-      id: Date.now(),
+      id: tempId,
       user: user?.name || 'Anonymous',
       text: commentText,
       authorId: user?.id,
@@ -38,11 +40,15 @@ export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
     setShowComments(true);
     
     // Sync with backend
-    // TODO: Integrate with backend comment API
-    // Example: await addComment(post.id, commentText)
-    
-    // Notify parent to refresh
-    if (onCommentAdded) onCommentAdded();
+    try {
+      await addComment(post.id, user.id, newComment.text);
+      if (onCommentAdded) onCommentAdded();
+    } catch (err) {
+      console.error("Failed to add comment to backend:", err);
+      // Revert optimistic update on failure
+      setComments(prev => prev.filter(c => c.id !== tempId));
+      alert("Failed to submit comment. Please try again.");
+    }
   };
 
   const handleDelete = async () => {
@@ -82,21 +88,24 @@ export default function PostCard({ post, onLike, onCommentAdded, onDelete }) {
           onClick={handleLike} 
           className={`feed-action-btn ${post.likedByCurrent ? 'liked' : ''}`}
           disabled={isLiking}
+          style={{display: 'flex', alignItems: 'center', gap: '6px'}}
         >
           <Heart size={22} fill={post.likedByCurrent ? 'currentColor' : 'none'} />
+          <span style={{fontSize: '0.9rem', fontWeight: '500'}}>{post.likes || 0}</span>
         </button>
-        <button onClick={() => setShowComments(!showComments)} className="feed-action-btn">
+        <button 
+          onClick={() => setShowComments(!showComments)} 
+          className="feed-action-btn"
+          style={{display: 'flex', alignItems: 'center', gap: '6px'}}
+        >
           <MessageSquare size={22} />
+          <span style={{fontSize: '0.9rem', fontWeight: '500'}}>{comments.length}</span>
         </button>
         {isOwner && (
           <button onClick={handleDelete} className="feed-action-btn" style={{marginLeft: 'auto', color: 'var(--danger)'}}>
             <Trash2 size={22} />
           </button>
         )}
-      </div>
-      
-      <div className="feed-post-likes">
-        {post.likes} likes
       </div>
       
       {showComments && (

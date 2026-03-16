@@ -34,7 +34,7 @@ export default function Login() {
       <div className="auth-left">
         <NetworkAnimation />
         <div className="auth-animation-content">
-          <h1 className="animate-fadeIn">Welcome to blogapp</h1>
+          <h1 className="animate-fadeIn">Welcome to BlogIt</h1>
           <p className="animate-fadeIn" style={{animationDelay: '0.2s'}}>Connect, Share, Inspire</p>
           
           {/* Blog App Logo */}
@@ -42,7 +42,7 @@ export default function Login() {
             <div className="auth-logo">
               <span style={{fontSize: '4rem'}}>📝</span>
             </div>
-            <p style={{marginTop: '16px', fontSize: '1.5rem', fontWeight: '700', color: 'white', letterSpacing: '-0.5px'}}>blogapp</p>
+            <p style={{marginTop: '16px', fontSize: '1.5rem', fontWeight: '700', color: 'white', letterSpacing: '-0.5px'}}>BlogIt</p>
           </div>
           
           <div style={{marginTop: '40px', opacity: 0.9}}>

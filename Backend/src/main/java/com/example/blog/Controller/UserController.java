@@ -16,6 +16,20 @@ public class UserController {
     @Autowired
     private UserService userService;
 
+    @GetMapping("/search")
+    public ResponseEntity<?> searchUsers(@RequestParam("q") String query) {
+        try {
+            if (query == null || query.trim().isEmpty()) {
+                return ResponseEntity.badRequest().body("Search query cannot be empty");
+            }
+            java.util.List<User> results = userService.searchUsers(query);
+            return ResponseEntity.ok(results);
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
+                    .body("Search failed: " + e.getMessage());
+        }
+    }
+
     @GetMapping("/{id}")
     public ResponseEntity<?> getUserProfile(@PathVariable Long id) {
         try {
@@ -36,8 +50,10 @@ public class UserController {
             User user = userService.updateUserProfile(id, updatedUser);
             return ResponseEntity.ok(user);
         } catch (RuntimeException e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(e.getMessage());
         } catch (Exception e) {
+            e.printStackTrace();
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Error updating profile: " + e.getMessage());
         }
     }

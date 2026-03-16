@@ -14,13 +14,15 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function AppRoutes() {
+  const { isAuthenticated } = useAuth();
+
   return (
     <div style={{minHeight: '100vh'}}>
       <Navbar />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+        <Route path="/" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
+        <Route path="/login" element={isAuthenticated ? <Navigate to="/home" /> : <Login />} />
+        <Route path="/register" element={isAuthenticated ? <Navigate to="/home" /> : <Register />} />
         
         <Route path="/home" element={
           <ProtectedRoute><Home /></ProtectedRoute>
@@ -34,12 +36,14 @@ function AppRoutes() {
         <Route path="/profile" element={
           <ProtectedRoute><Profile /></ProtectedRoute>
         } />
-        <Route path="/profile/:username" element={
+        <Route path="/profile/:profileSlug" element={
           <ProtectedRoute><Profile /></ProtectedRoute>
         } />
         <Route path="/post/:id" element={
           <ProtectedRoute><PostDetails /></ProtectedRoute>
         } />
+        {/* Catch all invalid routes and redirect to home if logged in, else login */}
+        <Route path="*" element={<Navigate to="/" />} />
       </Routes>
     </div>
   );

@@ -45,7 +45,7 @@ export default function Register() {
             <div className="auth-logo">
               <span style={{fontSize: '4rem'}}>📝</span>
             </div>
-            <p style={{marginTop: '16px', fontSize: '1.5rem', fontWeight: '700', color: 'white', letterSpacing: '-0.5px'}}>blogapp</p>
+            <p style={{marginTop: '16px', fontSize: '1.5rem', fontWeight: '700', color: 'white', letterSpacing: '-0.5px'}}>BlogIt</p>
           </div>
           
           <div style={{marginTop: '40px', opacity: 0.9}}>

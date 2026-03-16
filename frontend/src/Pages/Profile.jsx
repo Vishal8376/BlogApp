@@ -3,13 +3,13 @@ import { useAuth } from '../Contexts/AuthContext';
 
 import { useNavigate, useParams } from 'react-router-dom';
 import { Edit2, Image as ImageIcon, Users, UserCheck, X, Grid3X3, Heart, MessageSquare, Trash2 } from 'lucide-react';
-import { getUserProfile, updateUserProfile } from '../Services/userService';
+import { getUserProfile, updateUserProfile, followUser, unfollowUser, checkFollowing, getFollowersCount, getFollowingCount, getFollowersList, getFollowingList } from '../Services/userService';
 import { deletePost } from '../Services/postService';
 import api from '../Services/api';
 
 export default function Profile() {
   const { user, isAuthenticated, updateUser } = useAuth();
-  const { username } = useParams();
+  const { profileSlug } = useParams();
   const navigate = useNavigate();
   
   const [profileData, setProfileData] = useState(null);
@@ -18,12 +18,15 @@ export default function Profile() {
   const [followingList, setFollowingList] = useState([]);
   const [isCurrentUser, setIsCurrentUser] = useState(true);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followersCount, setFollowersCount] = useState(0);
+  const [followingCount, setFollowingCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [showEditModal, setShowEditModal] = useState(false);
   const [editData, setEditData] = useState({ name: '', bio: '', profileImage: null });
   const [imagePreview, setImagePreview] = useState(null);
   const [showFollowers, setShowFollowers] = useState(false);
   const [showFollowing, setShowFollowing] = useState(false);
+  const [myFollowingIds, setMyFollowingIds] = useState([]);
 
   useEffect(() => {
     const loadProfile = async () => {
@@ -35,10 +38,15 @@ export default function Profile() {
           return;
         }
 
-        // For now, focus on the current user's profile
-        // To support finding by username, the backend would need a findByUsername or findByEmail method
-        // Since we only have getUserById, we'll use user.id
-        const targetId = user.id; 
+        // Determine target user ID
+        let targetId = user.id;
+        if (profileSlug) {
+            // Slug is format "1-Name"
+            const parts = profileSlug.split("-");
+            if (parts.length > 0 && !isNaN(parts[0])) {
+                targetId = parseInt(parts[0], 10);
+            }
+        }
         
         console.log("Fetching profile for id:", targetId);
         const profile = await getUserProfile(targetId);
@@ -59,10 +67,25 @@ export default function Profile() {
         const postsRes = await api.get(`/posts/user/${targetId}`);
         setUserPosts(postsRes.data || []);
         
+        // Fetch counts
+        const [fCount, flwingCount] = await Promise.all([
+          getFollowersCount(targetId),
+          getFollowingCount(targetId)
+        ]);
+        setFollowersCount(fCount);
+        setFollowingCount(flwingCount);
+
         if (!isCurrent) {
-          // TODO: Integrate with backend checkFollowing API
-          const following = false;
-          setIsFollowing(following);
+          const followingStatus = await checkFollowing(user.id, targetId);
+          setIsFollowing(followingStatus);
+        }
+
+        // Fetch current user's following list to know follow back status globally
+        if (user) {
+            const myFollowing = await getFollowingList(user.id);
+            if (myFollowing) {
+                setMyFollowingIds(myFollowing.map(f => f.id));
+            }
         }
         
       } catch (err) {
@@ -91,8 +114,8 @@ export default function Profile() {
 
   const handleSaveProfile = async () => {
     try {
+      // Send only the necessary fields to prevent Jackson deserialization/recursion errors on backend
       const updates = {
-         ...user,
          name: editData.name,
          bio: editData.bio,
          profilePicUrl: editData.profileImage
@@ -112,34 +135,78 @@ export default function Profile() {
 
   const handleFollow = async () => {
     try {
-      // TODO: Integrate with backend toggleFollow API
-      const result = null;
-      setIsFollowing(result.isFollowing);
-      setProfileData({...profileData, followers: result.followers});
+      if (isFollowing) {
+        await unfollowUser(user.id, profileData.id);
+        setIsFollowing(false);
+        setFollowersCount(prev => Math.max(0, prev - 1));
+        setMyFollowingIds(prev => prev.filter(id => id !== profileData.id));
+      } else {
+        await followUser(user.id, profileData.id);
+        setIsFollowing(true);
+        setFollowersCount(prev => prev + 1);
+        setMyFollowingIds(prev => [...prev, profileData.id]);
+      }
     } catch (err) {
       console.error('Follow error:', err);
     }
   };
 
   const openFollowersModal = async () => {
-    // TODO: Integrate with backend getFollowers API
-    const followers = [];
-    setFollowersList(followers || []);
-    setShowFollowers(true);
+    try {
+      const followers = await getFollowersList(profileData.id);
+      setFollowersList(followers || []);
+      setShowFollowers(true);
+    } catch (err) {
+      console.error("Error fetching followers:", err);
+    }
   };
 
   const openFollowingModal = async () => {
-    // TODO: Integrate with backend getFollowing API
-    const following = [];
-    setFollowingList(following || []);
-    setShowFollowing(true);
+    try {
+      const following = await getFollowingList(profileData.id);
+      setFollowingList(following || []);
+      setShowFollowing(true);
+    } catch (err) {
+      console.error("Error fetching following:", err);
+    }
   };
 
-  const handleFollowFromModal = async (targetUserId) => {
-    // TODO: Integrate with backend toggleFollow API
-    // TODO: Integrate with backend getProfile API
-    const profile = null;
-    setProfileData(profile);
+  const handleRemoveFollower = async (followerId) => {
+    try {
+        // Here, the follower is the source, and the current user is the target
+        await unfollowUser(followerId, user.id);
+        
+        // Refresh the followers modal to update the list
+        openFollowersModal();
+        
+        // Update user stats
+        if (isCurrentUser) {
+            setFollowersCount(prev => Math.max(0, prev - 1));
+        }
+    } catch (error) {
+        console.error("Error removing follower", error);
+    }
+  };
+
+  const handleFollowToggleFromModal = async (targetUserId) => {
+    try {
+        const isFollowingTarget = myFollowingIds.includes(targetUserId);
+        if (isFollowingTarget) {
+            await unfollowUser(user.id, targetUserId);
+            setMyFollowingIds(prev => prev.filter(id => id !== targetUserId));
+            if (isCurrentUser) setFollowingCount(prev => Math.max(0, prev - 1));
+        } else {
+            await followUser(user.id, targetUserId);
+            setMyFollowingIds(prev => [...prev, targetUserId]);
+            if (isCurrentUser) setFollowingCount(prev => prev + 1);
+        }
+        
+        if (showFollowers) openFollowersModal();
+        if (showFollowing) openFollowingModal();
+        
+    } catch (error) {
+        console.error("Error modifying follow status from modal", error);
+    }
   };
 
   if (loading) {
@@ -228,11 +295,11 @@ export default function Profile() {
               <span className="stat-label">posts</span>
             </div>
             <div className="stat-item" onClick={openFollowersModal}>
-              <span className="stat-count">{profileData.followers || 0}</span>
+              <span className="stat-count">{followersCount}</span>
               <span className="stat-label">followers</span>
             </div>
             <div className="stat-item" onClick={openFollowingModal}>
-              <span className="stat-count">{profileData.following || 0}</span>
+              <span className="stat-count">{followingCount}</span>
               <span className="stat-label">following</span>
             </div>
           </div>
@@ -338,12 +405,24 @@ export default function Profile() {
                       <div className="user-list-username">{u.emailId}</div>
                     </div>
                     {u.id !== user?.id && (
-                      <button 
-                        className={`follow-btn btn-sm ${u.followingList?.includes(user?.id) ? 'following' : 'not-following'}`}
-                        onClick={() => handleFollowFromModal(u.id)}
-                      >
-                        {u.followingList?.includes(user?.id) ? 'Following' : 'Follow'}
-                      </button>
+                      <div style={{display: 'flex', gap: '8px', alignItems: 'center'}}>
+                        <button 
+                          className={`follow-btn btn-sm ${myFollowingIds.includes(u.id) ? 'following' : 'not-following'}`}
+                          onClick={() => handleFollowToggleFromModal(u.id)}
+                        >
+                          {myFollowingIds.includes(u.id) ? 'Following' : 'Follow Back'}
+                        </button>
+                        {isCurrentUser && (
+                          <button 
+                            className="btn btn-outline btn-sm"
+                            style={{color: 'var(--danger)', borderColor: 'var(--danger-light)'}}
+                            onClick={() => handleRemoveFollower(u.id)}
+                            title="Remove Follower"
+                          >
+                            Remove
+                          </button>
+                        )}
+                      </div>
                     )}
                   </div>
                 ))
@@ -385,10 +464,10 @@ export default function Profile() {
                     </div>
                     {u.id !== user?.id && (
                       <button 
-                        className={`follow-btn btn-sm ${u.followingList?.includes(user?.id) ? 'following' : 'not-following'}`}
-                        onClick={() => handleFollowFromModal(u.id)}
+                        className={`follow-btn btn-sm following`}
+                        onClick={() => handleFollowToggleFromModal(u.id)}
                       >
-                        {u.followingList?.includes(user?.id) ? 'Following' : 'Follow'}
+                        Unfollow
                       </button>
                     )}
                   </div>

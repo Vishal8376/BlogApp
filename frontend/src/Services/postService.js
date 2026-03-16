@@ -34,3 +34,8 @@ export const toggleLike = async (postId, userId) => {
   const res = await api.post('/interactions/like', null, { params: { postId, userId } });
   return res.data;
 };
+
+export const addComment = async (postId, userId, comment) => {
+  const res = await api.post('/interactions/comment', null, { params: { postId, userId, comment } });
+  return res.data;
+};
